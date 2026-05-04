@@ -53,9 +53,11 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+
             SizedBox(
               width: 100,
             height: 120,
+            //Der Button bzw die Flashcard
             child :FloatingActionButton(onPressed: (){},
               backgroundColor: Colors.blueGrey,
               child: Text("Frage 1:\n was bedeutet 67?", style: Theme.of(context).textTheme.bodyLarge),
