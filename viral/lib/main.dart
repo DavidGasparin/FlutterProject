@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,69 +8,59 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      home: CsvTestPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
+class CsvTestPage extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<CsvTestPage> createState() => _CsvTestPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _CsvTestPageState extends State<CsvTestPage> {
+  String output = "Lade CSV Dateien...";
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  @override
+  void initState() {
+    super.initState();
+    loadCSV();
+  }
+
+  Future<void> loadCSV() async {
+    try {
+      // Fragen laden
+      String fragen =
+      await rootBundle.loadString('assets/fragen.csv');
+
+      // Antworten laden
+      String antworten =
+      await rootBundle.loadString('assets/antworten.csv');
+
+      setState(() {
+        output =
+        "FRAGEN:\n\n$fragen\n\n-------------------\n\nANTWORTEN:\n\n$antworten";
+      });
+    } catch (e) {
+      setState(() {
+        output = "Fehler beim Laden:\n$e";
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text("CSV Test"),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-
-            SizedBox(
-              width: 100,
-            height: 120,
-            //Der Button bzw die Flashcard
-            child :FloatingActionButton(onPressed: (){},
-              backgroundColor: Colors.blueGrey,
-              child: Text("Frage 1:\n was bedeutet 67?", style: Theme.of(context).textTheme.bodyLarge),
-            ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Text(output),
       ),
     );
   }
