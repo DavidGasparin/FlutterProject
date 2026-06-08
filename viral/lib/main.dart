@@ -1,67 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+
+import 'CradView.dart';
+
+void main() async{
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Hive
+  await Hive.initFlutter();
+
+  await Hive.openBox("Cards");
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: CsvTestPage(),
+      title: 'Flutter Demo',
+      theme: ThemeData(
+          colorScheme: ColorScheme.dark()
+    ),
+    home: const CardView(),
     );
-  }
-}
-
-class CsvTestPage extends StatefulWidget {
-  @override
-  State<CsvTestPage> createState() => _CsvTestPageState();
-}
-
-class _CsvTestPageState extends State<CsvTestPage> {
-  String output = "Lade CSV Dateien...";
-
-  @override
-  void initState() {
-    super.initState();
-    loadCSV();
-  }
-
-  Future<void> loadCSV() async {
-    try {
-      // Fragen laden
-      String fragen =
-      await rootBundle.loadString('assets/fragen.csv');
-
-      // Antworten laden
-      String antworten =
-      await rootBundle.loadString('assets/antworten.csv');
-
-      setState(() {
-        output =
-        "FRAGEN:\n\n$fragen\n\n-------------------\n\nANTWORTEN:\n\n$antworten";
-      });
-    } catch (e) {
-      setState(() {
-        output = "Fehler beim Laden:\n$e";
-      });
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("CSV Test"),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Text(output),
-      ),
-    );
-  }
 }
